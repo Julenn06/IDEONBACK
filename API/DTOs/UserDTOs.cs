@@ -10,7 +10,7 @@ public class CreateUserRequest
 
 public class UserResponse
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string Username { get; set; } = string.Empty;
     public string? AvatarUrl { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -26,8 +26,8 @@ public class UpdateSettingsRequest
 
 public class SettingsResponse
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public string Id { get; set; }
+    public string UserId { get; set; }
     public bool DarkMode { get; set; }
     public bool Notifications { get; set; }
     public string Language { get; set; } = string.Empty;

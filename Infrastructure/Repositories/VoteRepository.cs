@@ -14,19 +14,19 @@ public class VoteRepository : IVoteRepository
         _context = context;
     }
 
-    public async Task<Vote?> GetByIdAsync(Guid id)
+    public async Task<Vote?> GetByIdAsync(string id)
     {
         return await _context.Votes.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Vote>> GetByRoundIdAsync(Guid roundId)
+    public async Task<IEnumerable<Vote>> GetByRoundIdAsync(string roundId)
     {
         return await _context.Votes
             .Where(v => v.RoundId == roundId)
             .ToListAsync();
     }
 
-    public async Task<Vote?> GetByRoundAndVoterAsync(Guid roundId, Guid voterPlayerId)
+    public async Task<Vote?> GetByRoundAndVoterAsync(string roundId, string voterPlayerId)
     {
         return await _context.Votes
             .FirstOrDefaultAsync(v => v.RoundId == roundId && v.VoterPlayerId == voterPlayerId);
@@ -34,8 +34,8 @@ public class VoteRepository : IVoteRepository
 
     public async Task<Vote> CreateAsync(Vote vote)
     {
-        if (vote.Id == Guid.Empty)
-            vote.Id = Guid.NewGuid();
+        if (vote.Id == string.Empty)
+            vote.Id = Guid.NewGuid().ToString();
         
         if (vote.CreatedAt == DateTime.MinValue)
             vote.CreatedAt = DateTime.UtcNow;
@@ -45,14 +45,14 @@ public class VoteRepository : IVoteRepository
         return vote;
     }
 
-    public async Task<int> GetVoteCountByRoundIdAsync(Guid roundId)
+    public async Task<int> GetVoteCountByRoundIdAsync(string roundId)
     {
         return await _context.Votes
             .Where(v => v.RoundId == roundId)
             .CountAsync();
     }
 
-    public async Task<Dictionary<Guid, int>> GetVotesByPlayerInRoundAsync(Guid roundId)
+    public async Task<Dictionary<string, int>> GetVotesByPlayerInRoundAsync(string roundId)
     {
         return await _context.Votes
             .Where(v => v.RoundId == roundId)

@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // CONFIGURACIÓN DE SERVICIOS
 // ============================================================
 
-// PostgreSQL
+// CrateDB (compatible con protocolo PostgreSQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<IdeonDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -117,7 +117,7 @@ app.MapGet("/health", () => Results.Ok(new
 
 Console.WriteLine("╔════════════════════════════════════════════╗");
 Console.WriteLine("║    IDEON Backend - Clean & Clash          ║");
-Console.WriteLine("║    ASP.NET Core 8 + PostgreSQL            ║");
+Console.WriteLine("║    ASP.NET Core 8 + CrateDB               ║");
 Console.WriteLine("╚════════════════════════════════════════════╝");
 Console.WriteLine();
 Console.WriteLine($"🚀 Iniciando servidor en: {DateTime.UtcNow}");

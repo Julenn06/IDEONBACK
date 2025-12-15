@@ -7,7 +7,7 @@ namespace IdeonBack.Domain.Entities;
 /// </summary>
 public class Room
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
     public RoomStatus Status { get; set; } = RoomStatus.Waiting;
     public int RoundsTotal { get; set; }

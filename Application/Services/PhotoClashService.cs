@@ -44,7 +44,7 @@ public class PhotoClashService
     /// <summary>
     /// Crea una nueva sala de juego
     /// </summary>
-    public async Task<Room> CreateRoomAsync(Guid hostUserId, int roundsTotal, int secondsPerRound, bool nsfwAllowed)
+    public async Task<Room> CreateRoomAsync(string hostUserId, int roundsTotal, int secondsPerRound, bool nsfwAllowed)
     {
         // Validaciones
         if (roundsTotal <= 0 || roundsTotal > 20)
@@ -80,7 +80,7 @@ public class PhotoClashService
     /// <summary>
     /// Unirse a una sala existente mediante código
     /// </summary>
-    public async Task<RoomPlayer> JoinRoomAsync(Guid roomId, Guid userId)
+    public async Task<RoomPlayer> JoinRoomAsync(string roomId, string userId)
     {
         var room = await _roomRepository.GetByIdWithPlayersAsync(roomId);
         if (room == null)
@@ -111,7 +111,7 @@ public class PhotoClashService
     /// <summary>
     /// Unirse a una sala mediante código
     /// </summary>
-    public async Task<RoomPlayer> JoinRoomByCodeAsync(string code, Guid userId)
+    public async Task<RoomPlayer> JoinRoomByCodeAsync(string code, string userId)
     {
         var room = await _roomRepository.GetByCodeAsync(code);
         if (room == null)
@@ -123,7 +123,7 @@ public class PhotoClashService
     /// <summary>
     /// Iniciar la partida y generar todas las rondas
     /// </summary>
-    public async Task<Room> StartGameAsync(Guid roomId, string language = "es")
+    public async Task<Room> StartGameAsync(string roomId, string language = "es")
     {
         var room = await _roomRepository.GetByIdWithPlayersAsync(roomId);
         if (room == null)
@@ -168,7 +168,7 @@ public class PhotoClashService
     /// <summary>
     /// Subir foto a la ronda actual
     /// </summary>
-    public async Task<RoundPhoto> UploadPhotoAsync(Guid roundId, Guid playerId, string photoUrl)
+    public async Task<RoundPhoto> UploadPhotoAsync(string roundId, string playerId, string photoUrl)
     {
         var round = await _roundRepository.GetByIdAsync(roundId);
         if (round == null)
@@ -195,7 +195,7 @@ public class PhotoClashService
     /// <summary>
     /// Iniciar fase de votación para una ronda
     /// </summary>
-    public async Task<Room> StartVotingPhaseAsync(Guid roomId)
+    public async Task<Room> StartVotingPhaseAsync(string roomId)
     {
         var room = await _roomRepository.GetByIdAsync(roomId);
         if (room == null)
@@ -208,7 +208,7 @@ public class PhotoClashService
     /// <summary>
     /// Registrar un voto
     /// </summary>
-    public async Task<Vote> VoteAsync(Guid roundId, Guid voterPlayerId, Guid votedPlayerId)
+    public async Task<Vote> VoteAsync(string roundId, string voterPlayerId, string votedPlayerId)
     {
         // Validar que no se vote a sí mismo
         if (voterPlayerId == votedPlayerId)
@@ -236,10 +236,10 @@ public class PhotoClashService
     /// <summary>
     /// Calcular puntuaciones de una ronda y actualizar scores
     /// </summary>
-    public async Task<Dictionary<Guid, int>> CalculateRoundScoresAsync(Guid roundId)
+    public async Task<Dictionary<string, int>> CalculateRoundScoresAsync(string roundId)
     {
         var votes = await _voteRepository.GetVotesByPlayerInRoundAsync(roundId);
-        var scores = new Dictionary<Guid, int>();
+        var scores = new Dictionary<string, int>();
 
         if (votes.Count == 0)
             return scores;
@@ -281,7 +281,7 @@ public class PhotoClashService
     /// <summary>
     /// Finalizar una ronda
     /// </summary>
-    public async Task<Round> FinishRoundAsync(Guid roundId)
+    public async Task<Round> FinishRoundAsync(string roundId)
     {
         var round = await _roundRepository.GetByIdAsync(roundId);
         if (round == null)
@@ -294,7 +294,7 @@ public class PhotoClashService
     /// <summary>
     /// Iniciar la siguiente ronda
     /// </summary>
-    public async Task<Round?> StartNextRoundAsync(Guid roomId)
+    public async Task<Round?> StartNextRoundAsync(string roomId)
     {
         var room = await _roomRepository.GetByIdWithPlayersAsync(roomId);
         if (room == null)
@@ -322,7 +322,7 @@ public class PhotoClashService
     /// <summary>
     /// Finalizar partida y determinar ganador
     /// </summary>
-    public async Task<MatchResult> FinishGameAsync(Guid roomId)
+    public async Task<MatchResult> FinishGameAsync(string roomId)
     {
         var room = await _roomRepository.GetByIdWithPlayersAsync(roomId);
         if (room == null)
@@ -349,7 +349,7 @@ public class PhotoClashService
     /// <summary>
     /// Obtener estado completo de una sala
     /// </summary>
-    public async Task<Room?> GetRoomStateAsync(Guid roomId)
+    public async Task<Room?> GetRoomStateAsync(string roomId)
     {
         return await _roomRepository.GetByIdWithPlayersAsync(roomId);
     }
@@ -357,7 +357,7 @@ public class PhotoClashService
     /// <summary>
     /// Obtener ronda actual de una sala
     /// </summary>
-    public async Task<Round?> GetCurrentRoundAsync(Guid roomId)
+    public async Task<Round?> GetCurrentRoundAsync(string roomId)
     {
         return await _roundRepository.GetCurrentRoundByRoomIdAsync(roomId);
     }
@@ -365,7 +365,7 @@ public class PhotoClashService
     /// <summary>
     /// Obtener fotos de una ronda
     /// </summary>
-    public async Task<IEnumerable<RoundPhoto>> GetRoundPhotosAsync(Guid roundId)
+    public async Task<IEnumerable<RoundPhoto>> GetRoundPhotosAsync(string roundId)
     {
         return await _roundPhotoRepository.GetByRoundIdAsync(roundId);
     }
@@ -373,7 +373,7 @@ public class PhotoClashService
     /// <summary>
     /// Obtener votos de una ronda
     /// </summary>
-    public async Task<IEnumerable<Vote>> GetRoundVotesAsync(Guid roundId)
+    public async Task<IEnumerable<Vote>> GetRoundVotesAsync(string roundId)
     {
         return await _voteRepository.GetByRoundIdAsync(roundId);
     }

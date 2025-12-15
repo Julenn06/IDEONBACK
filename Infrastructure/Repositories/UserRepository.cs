@@ -14,7 +14,7 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(string id)
     {
         return await _context.Users
             .Include(u => u.AppSettings)
@@ -30,8 +30,8 @@ public class UserRepository : IUserRepository
 
     public async Task<User> CreateAsync(User user)
     {
-        if (user.Id == Guid.Empty)
-            user.Id = Guid.NewGuid();
+        if (user.Id == string.Empty)
+            user.Id = Guid.NewGuid().ToString();
         
         if (user.CreatedAt == DateTime.MinValue)
             user.CreatedAt = DateTime.UtcNow;

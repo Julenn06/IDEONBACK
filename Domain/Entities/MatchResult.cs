@@ -5,9 +5,9 @@ namespace IdeonBack.Domain.Entities;
 /// </summary>
 public class MatchResult
 {
-    public Guid Id { get; set; }
-    public Guid RoomId { get; set; }
-    public Guid WinnerPlayerId { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string RoomId { get; set; } = string.Empty;
+    public string WinnerPlayerId { get; set; } = string.Empty;
     public int TotalRounds { get; set; }
     public DateTime CreatedAt { get; set; }
 

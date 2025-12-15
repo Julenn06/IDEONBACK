@@ -14,7 +14,7 @@ public class RoomRepository : IRoomRepository
         _context = context;
     }
 
-    public async Task<Room?> GetByIdAsync(Guid id)
+    public async Task<Room?> GetByIdAsync(string id)
     {
         return await _context.Rooms.FindAsync(id);
     }
@@ -24,7 +24,7 @@ public class RoomRepository : IRoomRepository
         return await _context.Rooms.FirstOrDefaultAsync(r => r.Code == code);
     }
 
-    public async Task<Room?> GetByIdWithPlayersAsync(Guid id)
+    public async Task<Room?> GetByIdWithPlayersAsync(string id)
     {
         return await _context.Rooms
             .Include(r => r.Players)
@@ -44,8 +44,8 @@ public class RoomRepository : IRoomRepository
 
     public async Task<Room> CreateAsync(Room room)
     {
-        if (room.Id == Guid.Empty)
-            room.Id = Guid.NewGuid();
+        if (room.Id == string.Empty)
+            room.Id = Guid.NewGuid().ToString();
         
         if (room.CreatedAt == DateTime.MinValue)
             room.CreatedAt = DateTime.UtcNow;

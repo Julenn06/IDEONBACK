@@ -52,7 +52,7 @@ public class UserService
     /// <summary>
     /// Obtener usuario por ID
     /// </summary>
-    public async Task<User?> GetUserAsync(Guid userId)
+    public async Task<User?> GetUserAsync(string userId)
     {
         return await _userRepository.GetByIdAsync(userId);
     }
@@ -68,7 +68,7 @@ public class UserService
     /// <summary>
     /// Actualizar último login
     /// </summary>
-    public async Task UpdateLastLoginAsync(Guid userId)
+    public async Task UpdateLastLoginAsync(string userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
         if (user != null)
@@ -81,7 +81,7 @@ public class UserService
     /// <summary>
     /// Actualizar configuración del usuario
     /// </summary>
-    public async Task<AppSettings> UpdateSettingsAsync(Guid userId, bool? darkMode = null, bool? notifications = null, string? language = null)
+    public async Task<AppSettings> UpdateSettingsAsync(string userId, bool? darkMode = null, bool? notifications = null, string? language = null)
     {
         var settings = await _appSettingsRepository.GetByUserIdAsync(userId);
         
@@ -107,7 +107,7 @@ public class UserService
     /// <summary>
     /// Obtener configuración del usuario
     /// </summary>
-    public async Task<AppSettings?> GetSettingsAsync(Guid userId)
+    public async Task<AppSettings?> GetSettingsAsync(string userId)
     {
         return await _appSettingsRepository.GetByUserIdAsync(userId);
     }

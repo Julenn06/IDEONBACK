@@ -14,12 +14,12 @@ public class PhotoRepository : IPhotoRepository
         _context = context;
     }
 
-    public async Task<Photo?> GetByIdAsync(Guid id)
+    public async Task<Photo?> GetByIdAsync(string id)
     {
         return await _context.Photos.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Photo>> GetByUserIdAsync(Guid userId)
+    public async Task<IEnumerable<Photo>> GetByUserIdAsync(string userId)
     {
         return await _context.Photos
             .Where(p => p.UserId == userId)
@@ -27,7 +27,7 @@ public class PhotoRepository : IPhotoRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Photo>> GetUnreviewedByUserIdAsync(Guid userId)
+    public async Task<IEnumerable<Photo>> GetUnreviewedByUserIdAsync(string userId)
     {
         return await _context.Photos
             .Where(p => p.UserId == userId && p.KeepStatus == null)
@@ -35,7 +35,7 @@ public class PhotoRepository : IPhotoRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Photo>> GetDeletedByUserIdAsync(Guid userId, int limit = 5)
+    public async Task<IEnumerable<Photo>> GetDeletedByUserIdAsync(string userId, int limit = 5)
     {
         return await _context.Photos
             .Where(p => p.UserId == userId && p.KeepStatus == false)
@@ -46,8 +46,8 @@ public class PhotoRepository : IPhotoRepository
 
     public async Task<Photo> CreateAsync(Photo photo)
     {
-        if (photo.Id == Guid.Empty)
-            photo.Id = Guid.NewGuid();
+        if (photo.Id == string.Empty)
+            photo.Id = Guid.NewGuid().ToString();
 
         _context.Photos.Add(photo);
         await _context.SaveChangesAsync();
@@ -61,7 +61,7 @@ public class PhotoRepository : IPhotoRepository
         return photo;
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(string id)
     {
         var photo = await _context.Photos.FindAsync(id);
         if (photo != null)
@@ -71,7 +71,7 @@ public class PhotoRepository : IPhotoRepository
         }
     }
 
-    public async Task<int> GetDeletedCountByUserIdAsync(Guid userId)
+    public async Task<int> GetDeletedCountByUserIdAsync(string userId)
     {
         return await _context.Photos
             .Where(p => p.UserId == userId && p.KeepStatus == false)

@@ -44,7 +44,7 @@ public class UsersController : ControllerBase
     /// Obtener usuario por ID
     /// </summary>
     [HttpGet("{userId}")]
-    public async Task<ActionResult<UserResponse>> GetUser(Guid userId)
+    public async Task<ActionResult<UserResponse>> GetUser(string userId)
     {
         var user = await _userService.GetUserAsync(userId);
         if (user == null)
@@ -84,7 +84,7 @@ public class UsersController : ControllerBase
     /// Actualizar configuración del usuario
     /// </summary>
     [HttpPut("{userId}/settings")]
-    public async Task<ActionResult<SettingsResponse>> UpdateSettings(Guid userId, [FromBody] UpdateSettingsRequest request)
+    public async Task<ActionResult<SettingsResponse>> UpdateSettings(string userId, [FromBody] UpdateSettingsRequest request)
     {
         var settings = await _userService.UpdateSettingsAsync(
             userId, 
@@ -107,7 +107,7 @@ public class UsersController : ControllerBase
     /// Obtener configuración del usuario
     /// </summary>
     [HttpGet("{userId}/settings")]
-    public async Task<ActionResult<SettingsResponse>> GetSettings(Guid userId)
+    public async Task<ActionResult<SettingsResponse>> GetSettings(string userId)
     {
         var settings = await _userService.GetSettingsAsync(userId);
         if (settings == null)
@@ -127,7 +127,7 @@ public class UsersController : ControllerBase
     /// Actualizar último login
     /// </summary>
     [HttpPost("{userId}/login")]
-    public async Task<IActionResult> UpdateLastLogin(Guid userId)
+    public async Task<IActionResult> UpdateLastLogin(string userId)
     {
         await _userService.UpdateLastLoginAsync(userId);
         return Ok(new { message = "Login actualizado" });

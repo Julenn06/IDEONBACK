@@ -18,7 +18,7 @@ public class PhotoSweepService
     /// <summary>
     /// Registrar una nueva foto del usuario
     /// </summary>
-    public async Task<Photo> RegisterPhotoAsync(Guid userId, string uri, DateTime? dateTaken = null)
+    public async Task<Photo> RegisterPhotoAsync(string userId, string uri, DateTime? dateTaken = null)
     {
         var photo = new Photo
         {
@@ -33,7 +33,7 @@ public class PhotoSweepService
     /// <summary>
     /// Marcar foto como mantenida
     /// </summary>
-    public async Task<Photo> KeepPhotoAsync(Guid photoId)
+    public async Task<Photo> KeepPhotoAsync(string photoId)
     {
         var photo = await _photoRepository.GetByIdAsync(photoId);
         if (photo == null)
@@ -48,7 +48,7 @@ public class PhotoSweepService
     /// <summary>
     /// Marcar foto como eliminada
     /// </summary>
-    public async Task<Photo> DeletePhotoAsync(Guid photoId)
+    public async Task<Photo> DeletePhotoAsync(string photoId)
     {
         var photo = await _photoRepository.GetByIdAsync(photoId);
         if (photo == null)
@@ -63,7 +63,7 @@ public class PhotoSweepService
     /// <summary>
     /// Recuperar una foto de la papelera
     /// </summary>
-    public async Task<Photo> RecoverPhotoAsync(Guid photoId)
+    public async Task<Photo> RecoverPhotoAsync(string photoId)
     {
         var photo = await _photoRepository.GetByIdAsync(photoId);
         if (photo == null)
@@ -78,7 +78,7 @@ public class PhotoSweepService
     /// <summary>
     /// Obtener fotos sin revisar de un usuario
     /// </summary>
-    public async Task<IEnumerable<Photo>> GetUnreviewedPhotosAsync(Guid userId)
+    public async Task<IEnumerable<Photo>> GetUnreviewedPhotosAsync(string userId)
     {
         return await _photoRepository.GetUnreviewedByUserIdAsync(userId);
     }
@@ -86,7 +86,7 @@ public class PhotoSweepService
     /// <summary>
     /// Obtener últimas fotos eliminadas (papelera)
     /// </summary>
-    public async Task<IEnumerable<Photo>> GetDeletedPhotosAsync(Guid userId, int limit = 5)
+    public async Task<IEnumerable<Photo>> GetDeletedPhotosAsync(string userId, int limit = 5)
     {
         return await _photoRepository.GetDeletedByUserIdAsync(userId, limit);
     }
@@ -94,7 +94,7 @@ public class PhotoSweepService
     /// <summary>
     /// Obtener estadísticas de limpieza
     /// </summary>
-    public async Task<PhotoSweepStats> GetStatsAsync(Guid userId)
+    public async Task<PhotoSweepStats> GetStatsAsync(string userId)
     {
         var allPhotos = await _photoRepository.GetByUserIdAsync(userId);
         var deletedCount = await _photoRepository.GetDeletedCountByUserIdAsync(userId);
@@ -116,7 +116,7 @@ public class PhotoSweepService
     /// <summary>
     /// Eliminar permanentemente fotos marcadas como eliminadas
     /// </summary>
-    public async Task PermanentlyDeletePhotosAsync(Guid userId)
+    public async Task PermanentlyDeletePhotosAsync(string userId)
     {
         var deletedPhotos = await _photoRepository.GetDeletedByUserIdAsync(userId, int.MaxValue);
         

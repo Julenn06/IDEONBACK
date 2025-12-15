@@ -14,12 +14,12 @@ public class RoundRepository : IRoundRepository
         _context = context;
     }
 
-    public async Task<Round?> GetByIdAsync(Guid id)
+    public async Task<Round?> GetByIdAsync(string id)
     {
         return await _context.Rounds.FindAsync(id);
     }
 
-    public async Task<Round?> GetByIdWithPhotosAsync(Guid id)
+    public async Task<Round?> GetByIdWithPhotosAsync(string id)
     {
         return await _context.Rounds
             .Include(r => r.RoundPhotos)
@@ -29,7 +29,7 @@ public class RoundRepository : IRoundRepository
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public async Task<IEnumerable<Round>> GetByRoomIdAsync(Guid roomId)
+    public async Task<IEnumerable<Round>> GetByRoomIdAsync(string roomId)
     {
         return await _context.Rounds
             .Where(r => r.RoomId == roomId)
@@ -37,7 +37,7 @@ public class RoundRepository : IRoundRepository
             .ToListAsync();
     }
 
-    public async Task<Round?> GetCurrentRoundByRoomIdAsync(Guid roomId)
+    public async Task<Round?> GetCurrentRoundByRoomIdAsync(string roomId)
     {
         return await _context.Rounds
             .Where(r => r.RoomId == roomId && r.FinishedAt == null)
@@ -47,8 +47,8 @@ public class RoundRepository : IRoundRepository
 
     public async Task<Round> CreateAsync(Round round)
     {
-        if (round.Id == Guid.Empty)
-            round.Id = Guid.NewGuid();
+        if (round.Id == string.Empty)
+            round.Id = Guid.NewGuid().ToString();
 
         _context.Rounds.Add(round);
         await _context.SaveChangesAsync();

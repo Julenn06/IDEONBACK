@@ -14,14 +14,14 @@ public class RoomPlayerRepository : IRoomPlayerRepository
         _context = context;
     }
 
-    public async Task<RoomPlayer?> GetByIdAsync(Guid id)
+    public async Task<RoomPlayer?> GetByIdAsync(string id)
     {
         return await _context.RoomPlayers
             .Include(rp => rp.User)
             .FirstOrDefaultAsync(rp => rp.Id == id);
     }
 
-    public async Task<IEnumerable<RoomPlayer>> GetByRoomIdAsync(Guid roomId)
+    public async Task<IEnumerable<RoomPlayer>> GetByRoomIdAsync(string roomId)
     {
         return await _context.RoomPlayers
             .Include(rp => rp.User)
@@ -29,7 +29,7 @@ public class RoomPlayerRepository : IRoomPlayerRepository
             .ToListAsync();
     }
 
-    public async Task<RoomPlayer?> GetByRoomAndUserAsync(Guid roomId, Guid userId)
+    public async Task<RoomPlayer?> GetByRoomAndUserAsync(string roomId, string userId)
     {
         return await _context.RoomPlayers
             .Include(rp => rp.User)
@@ -38,8 +38,8 @@ public class RoomPlayerRepository : IRoomPlayerRepository
 
     public async Task<RoomPlayer> CreateAsync(RoomPlayer roomPlayer)
     {
-        if (roomPlayer.Id == Guid.Empty)
-            roomPlayer.Id = Guid.NewGuid();
+        if (roomPlayer.Id == string.Empty)
+            roomPlayer.Id = Guid.NewGuid().ToString();
         
         if (roomPlayer.JoinedAt == DateTime.MinValue)
             roomPlayer.JoinedAt = DateTime.UtcNow;
@@ -56,7 +56,7 @@ public class RoomPlayerRepository : IRoomPlayerRepository
         return roomPlayer;
     }
 
-    public async Task<int> GetPlayerCountByRoomIdAsync(Guid roomId)
+    public async Task<int> GetPlayerCountByRoomIdAsync(string roomId)
     {
         return await _context.RoomPlayers
             .Where(rp => rp.RoomId == roomId)

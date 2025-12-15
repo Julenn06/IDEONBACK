@@ -34,7 +34,7 @@ public class PhotoSweepController : ControllerBase
     /// Obtener fotos sin revisar
     /// </summary>
     [HttpGet("users/{userId}/unreviewed")]
-    public async Task<ActionResult<List<PhotoResponse>>> GetUnreviewedPhotos(Guid userId)
+    public async Task<ActionResult<List<PhotoResponse>>> GetUnreviewedPhotos(string userId)
     {
         var photos = await _photoSweepService.GetUnreviewedPhotosAsync(userId);
         var response = photos.Select(MapPhotoToResponse).ToList();
@@ -46,7 +46,7 @@ public class PhotoSweepController : ControllerBase
     /// Marcar foto como mantenida
     /// </summary>
     [HttpPost("photos/{photoId}/keep")]
-    public async Task<ActionResult<PhotoResponse>> KeepPhoto(Guid photoId)
+    public async Task<ActionResult<PhotoResponse>> KeepPhoto(string photoId)
     {
         try
         {
@@ -63,7 +63,7 @@ public class PhotoSweepController : ControllerBase
     /// Marcar foto como eliminada
     /// </summary>
     [HttpPost("photos/{photoId}/delete")]
-    public async Task<ActionResult<PhotoResponse>> DeletePhoto(Guid photoId)
+    public async Task<ActionResult<PhotoResponse>> DeletePhoto(string photoId)
     {
         try
         {
@@ -80,7 +80,7 @@ public class PhotoSweepController : ControllerBase
     /// Recuperar foto de la papelera
     /// </summary>
     [HttpPost("photos/{photoId}/recover")]
-    public async Task<ActionResult<PhotoResponse>> RecoverPhoto(Guid photoId)
+    public async Task<ActionResult<PhotoResponse>> RecoverPhoto(string photoId)
     {
         try
         {
@@ -97,7 +97,7 @@ public class PhotoSweepController : ControllerBase
     /// Obtener fotos eliminadas (papelera)
     /// </summary>
     [HttpGet("users/{userId}/deleted")]
-    public async Task<ActionResult<List<PhotoResponse>>> GetDeletedPhotos(Guid userId, [FromQuery] int limit = 5)
+    public async Task<ActionResult<List<PhotoResponse>>> GetDeletedPhotos(string userId, [FromQuery] int limit = 5)
     {
         var photos = await _photoSweepService.GetDeletedPhotosAsync(userId, limit);
         var response = photos.Select(MapPhotoToResponse).ToList();
@@ -109,7 +109,7 @@ public class PhotoSweepController : ControllerBase
     /// Obtener estadísticas de limpieza
     /// </summary>
     [HttpGet("users/{userId}/stats")]
-    public async Task<ActionResult<PhotoStatsResponse>> GetStats(Guid userId)
+    public async Task<ActionResult<PhotoStatsResponse>> GetStats(string userId)
     {
         var stats = await _photoSweepService.GetStatsAsync(userId);
         
@@ -128,7 +128,7 @@ public class PhotoSweepController : ControllerBase
     /// Eliminar permanentemente fotos marcadas
     /// </summary>
     [HttpDelete("users/{userId}/permanent-delete")]
-    public async Task<IActionResult> PermanentlyDeletePhotos(Guid userId)
+    public async Task<IActionResult> PermanentlyDeletePhotos(string userId)
     {
         await _photoSweepService.PermanentlyDeletePhotosAsync(userId);
         return Ok(new { message = "Fotos eliminadas permanentemente" });

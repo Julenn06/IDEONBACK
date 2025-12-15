@@ -14,12 +14,12 @@ public class RoundPhotoRepository : IRoundPhotoRepository
         _context = context;
     }
 
-    public async Task<RoundPhoto?> GetByIdAsync(Guid id)
+    public async Task<RoundPhoto?> GetByIdAsync(string id)
     {
         return await _context.RoundPhotos.FindAsync(id);
     }
 
-    public async Task<IEnumerable<RoundPhoto>> GetByRoundIdAsync(Guid roundId)
+    public async Task<IEnumerable<RoundPhoto>> GetByRoundIdAsync(string roundId)
     {
         return await _context.RoundPhotos
             .Include(rp => rp.Player)
@@ -28,7 +28,7 @@ public class RoundPhotoRepository : IRoundPhotoRepository
             .ToListAsync();
     }
 
-    public async Task<RoundPhoto?> GetByRoundAndPlayerAsync(Guid roundId, Guid playerId)
+    public async Task<RoundPhoto?> GetByRoundAndPlayerAsync(string roundId, string playerId)
     {
         return await _context.RoundPhotos
             .FirstOrDefaultAsync(rp => rp.RoundId == roundId && rp.PlayerId == playerId);
@@ -36,8 +36,8 @@ public class RoundPhotoRepository : IRoundPhotoRepository
 
     public async Task<RoundPhoto> CreateAsync(RoundPhoto roundPhoto)
     {
-        if (roundPhoto.Id == Guid.Empty)
-            roundPhoto.Id = Guid.NewGuid();
+        if (roundPhoto.Id == string.Empty)
+            roundPhoto.Id = Guid.NewGuid().ToString();
         
         if (roundPhoto.UploadedAt == DateTime.MinValue)
             roundPhoto.UploadedAt = DateTime.UtcNow;
@@ -47,7 +47,7 @@ public class RoundPhotoRepository : IRoundPhotoRepository
         return roundPhoto;
     }
 
-    public async Task<int> GetPhotoCountByRoundIdAsync(Guid roundId)
+    public async Task<int> GetPhotoCountByRoundIdAsync(string roundId)
     {
         return await _context.RoundPhotos
             .Where(rp => rp.RoundId == roundId)

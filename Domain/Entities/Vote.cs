@@ -5,10 +5,10 @@ namespace IdeonBack.Domain.Entities;
 /// </summary>
 public class Vote
 {
-    public Guid Id { get; set; }
-    public Guid RoundId { get; set; }
-    public Guid VoterPlayerId { get; set; }
-    public Guid VotedPlayerId { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string RoundId { get; set; } = string.Empty;
+    public string VoterPlayerId { get; set; } = string.Empty;
+    public string VotedPlayerId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 
     // Navegación

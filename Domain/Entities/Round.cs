@@ -5,8 +5,8 @@ namespace IdeonBack.Domain.Entities;
 /// </summary>
 public class Round
 {
-    public Guid Id { get; set; }
-    public Guid RoomId { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string RoomId { get; set; } = string.Empty;
     public int RoundNumber { get; set; }
     public string PromptPhrase { get; set; } = string.Empty;
     public DateTime? StartedAt { get; set; }

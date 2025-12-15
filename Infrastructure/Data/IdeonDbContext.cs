@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace IdeonBack.Infrastructure.Data;
 
 /// <summary>
-/// Contexto de base de datos para IDEON - PostgreSQL
+/// Contexto de base de datos para IDEON - CrateDB
 /// </summary>
 public class IdeonDbContext : DbContext
 {
@@ -31,10 +31,10 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("users");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
-            entity.Property(e => e.Username).HasColumnName("username").HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
+            entity.Property(e => e.Username).HasColumnName("username").IsRequired();
             entity.Property(e => e.AvatarUrl).HasColumnName("avatar_url");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.LastLogin).HasColumnName("last_login");
         });
 
@@ -43,7 +43,7 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("photos");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
             entity.Property(e => e.Uri).HasColumnName("uri").IsRequired();
             entity.Property(e => e.DateTaken).HasColumnName("date_taken");
@@ -54,8 +54,6 @@ public class IdeonDbContext : DbContext
                 .WithMany(u => u.Photos)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => e.UserId).HasDatabaseName("idx_photos_user");
         });
 
         // Room
@@ -63,17 +61,14 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("rooms");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
-            entity.Property(e => e.Code).HasColumnName("code").HasMaxLength(10).IsRequired();
-            entity.Property(e => e.Status).HasColumnName("status").HasMaxLength(20)
-                .HasConversion<string>()
-                .HasDefaultValue("waiting");
-            entity.Property(e => e.RoundsTotal).HasColumnName("rounds_total").IsRequired();
-            entity.Property(e => e.SecondsPerRound).HasColumnName("seconds_per_round").IsRequired();
-            entity.Property(e => e.NsfwAllowed).HasColumnName("nsfw_allowed").HasDefaultValue(false);
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
-
-            entity.HasIndex(e => e.Code).IsUnique();
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
+            entity.Property(e => e.Code).HasColumnName("code").IsRequired();
+            entity.Property(e => e.Status).HasColumnName("status")
+                .HasConversion<string>();
+            entity.Property(e => e.RoundsTotal).HasColumnName("rounds_total");
+            entity.Property(e => e.SecondsPerRound).HasColumnName("seconds_per_round");
+            entity.Property(e => e.NsfwAllowed).HasColumnName("nsfw_allowed");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
         });
 
         // RoomPlayer
@@ -81,11 +76,11 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("room_players");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.RoomId).HasColumnName("room_id").IsRequired();
             entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
-            entity.Property(e => e.JoinedAt).HasColumnName("joined_at").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.Score).HasColumnName("score").HasDefaultValue(0);
+            entity.Property(e => e.JoinedAt).HasColumnName("joined_at");
+            entity.Property(e => e.Score).HasColumnName("score");
 
             entity.HasOne(e => e.Room)
                 .WithMany(r => r.Players)
@@ -96,9 +91,6 @@ public class IdeonDbContext : DbContext
                 .WithMany(u => u.RoomPlayers)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.RoomId, e.UserId }).IsUnique();
-            entity.HasIndex(e => e.RoomId).HasDatabaseName("idx_room_players_room");
         });
 
         // Round
@@ -106,7 +98,7 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("rounds");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.RoomId).HasColumnName("room_id").IsRequired();
             entity.Property(e => e.RoundNumber).HasColumnName("round_number").IsRequired();
             entity.Property(e => e.PromptPhrase).HasColumnName("prompt_phrase").IsRequired();
@@ -117,8 +109,6 @@ public class IdeonDbContext : DbContext
                 .WithMany(r => r.Rounds)
                 .HasForeignKey(e => e.RoomId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.RoomId, e.RoundNumber }).IsUnique();
         });
 
         // RoundPhoto
@@ -126,11 +116,11 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("round_photos");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.RoundId).HasColumnName("round_id").IsRequired();
             entity.Property(e => e.PlayerId).HasColumnName("player_id").IsRequired();
             entity.Property(e => e.PhotoUrl).HasColumnName("photo_url").IsRequired();
-            entity.Property(e => e.UploadedAt).HasColumnName("uploaded_at").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UploadedAt).HasColumnName("uploaded_at");
 
             entity.HasOne(e => e.Round)
                 .WithMany(r => r.RoundPhotos)
@@ -141,9 +131,6 @@ public class IdeonDbContext : DbContext
                 .WithMany(p => p.RoundPhotos)
                 .HasForeignKey(e => e.PlayerId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.RoundId, e.PlayerId }).IsUnique();
-            entity.HasIndex(e => e.RoundId).HasDatabaseName("idx_round_photos_round");
         });
 
         // Vote
@@ -151,11 +138,11 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("votes");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.RoundId).HasColumnName("round_id").IsRequired();
             entity.Property(e => e.VoterPlayerId).HasColumnName("voter_player_id").IsRequired();
             entity.Property(e => e.VotedPlayerId).HasColumnName("voted_player_id").IsRequired();
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 
             entity.HasOne(e => e.Round)
                 .WithMany(r => r.Votes)
@@ -171,9 +158,6 @@ public class IdeonDbContext : DbContext
                 .WithMany(p => p.VotesReceived)
                 .HasForeignKey(e => e.VotedPlayerId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.RoundId, e.VoterPlayerId }).IsUnique();
-            entity.HasIndex(e => e.RoundId).HasDatabaseName("idx_votes_round");
         });
 
         // MatchResult
@@ -181,11 +165,11 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("match_results");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.RoomId).HasColumnName("room_id").IsRequired();
             entity.Property(e => e.WinnerPlayerId).HasColumnName("winner_player_id").IsRequired();
             entity.Property(e => e.TotalRounds).HasColumnName("total_rounds");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 
             entity.HasOne(e => e.Room)
                 .WithOne(r => r.MatchResult)
@@ -196,8 +180,6 @@ public class IdeonDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.WinnerPlayerId)
                 .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasIndex(e => e.RoomId).IsUnique();
         });
 
         // AppSettings
@@ -205,18 +187,16 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("app_settings");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
-            entity.Property(e => e.DarkMode).HasColumnName("dark_mode").HasDefaultValue(false);
-            entity.Property(e => e.Notifications).HasColumnName("notifications").HasDefaultValue(true);
-            entity.Property(e => e.Language).HasColumnName("language").HasMaxLength(10).HasDefaultValue("es");
+            entity.Property(e => e.DarkMode).HasColumnName("dark_mode");
+            entity.Property(e => e.Notifications).HasColumnName("notifications");
+            entity.Property(e => e.Language).HasColumnName("language");
 
             entity.HasOne(e => e.User)
                 .WithOne(u => u.AppSettings)
                 .HasForeignKey<AppSettings>(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => e.UserId).IsUnique();
         });
     }
 }

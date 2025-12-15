@@ -14,7 +14,7 @@ public class MatchResultRepository : IMatchResultRepository
         _context = context;
     }
 
-    public async Task<MatchResult?> GetByRoomIdAsync(Guid roomId)
+    public async Task<MatchResult?> GetByRoomIdAsync(string roomId)
     {
         return await _context.MatchResults
             .Include(mr => mr.WinnerPlayer)
@@ -24,8 +24,8 @@ public class MatchResultRepository : IMatchResultRepository
 
     public async Task<MatchResult> CreateAsync(MatchResult matchResult)
     {
-        if (matchResult.Id == Guid.Empty)
-            matchResult.Id = Guid.NewGuid();
+        if (matchResult.Id == string.Empty)
+            matchResult.Id = Guid.NewGuid().ToString();
         
         if (matchResult.CreatedAt == DateTime.MinValue)
             matchResult.CreatedAt = DateTime.UtcNow;
@@ -35,7 +35,7 @@ public class MatchResultRepository : IMatchResultRepository
         return matchResult;
     }
 
-    public async Task<IEnumerable<MatchResult>> GetByPlayerIdAsync(Guid playerId)
+    public async Task<IEnumerable<MatchResult>> GetByPlayerIdAsync(string playerId)
     {
         return await _context.MatchResults
             .Where(mr => mr.WinnerPlayerId == playerId)

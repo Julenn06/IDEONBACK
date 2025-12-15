@@ -4,7 +4,7 @@ namespace IdeonBack.API.DTOs;
 
 public class CreateRoomRequest
 {
-    public Guid HostUserId { get; set; }
+    public string HostUserId { get; set; }
     public int RoundsTotal { get; set; }
     public int SecondsPerRound { get; set; }
     public bool NsfwAllowed { get; set; }
@@ -13,32 +13,32 @@ public class CreateRoomRequest
 public class JoinRoomRequest
 {
     public string Code { get; set; } = string.Empty;
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
 }
 
 public class StartGameRequest
 {
-    public Guid RoomId { get; set; }
+    public string RoomId { get; set; }
     public string Language { get; set; } = "es";
 }
 
 public class UploadPhotoRequest
 {
-    public Guid RoundId { get; set; }
-    public Guid PlayerId { get; set; }
+    public string RoundId { get; set; }
+    public string PlayerId { get; set; }
     public string PhotoUrl { get; set; } = string.Empty;
 }
 
 public class VoteRequest
 {
-    public Guid RoundId { get; set; }
-    public Guid VoterPlayerId { get; set; }
-    public Guid VotedPlayerId { get; set; }
+    public string RoundId { get; set; }
+    public string VoterPlayerId { get; set; }
+    public string VotedPlayerId { get; set; }
 }
 
 public class RoomResponse
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string Code { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public int RoundsTotal { get; set; }
@@ -50,8 +50,8 @@ public class RoomResponse
 
 public class RoomPlayerResponse
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public string Id { get; set; }
+    public string UserId { get; set; }
     public string Username { get; set; } = string.Empty;
     public string? AvatarUrl { get; set; }
     public int Score { get; set; }
@@ -60,8 +60,8 @@ public class RoomPlayerResponse
 
 public class RoundResponse
 {
-    public Guid Id { get; set; }
-    public Guid RoomId { get; set; }
+    public string Id { get; set; }
+    public string RoomId { get; set; }
     public int RoundNumber { get; set; }
     public string PromptPhrase { get; set; } = string.Empty;
     public DateTime? StartedAt { get; set; }
@@ -70,9 +70,9 @@ public class RoundResponse
 
 public class RoundPhotoResponse
 {
-    public Guid Id { get; set; }
-    public Guid RoundId { get; set; }
-    public Guid PlayerId { get; set; }
+    public string Id { get; set; }
+    public string RoundId { get; set; }
+    public string PlayerId { get; set; }
     public string PlayerUsername { get; set; } = string.Empty;
     public string PhotoUrl { get; set; } = string.Empty;
     public DateTime UploadedAt { get; set; }
@@ -80,18 +80,18 @@ public class RoundPhotoResponse
 
 public class VoteResponse
 {
-    public Guid Id { get; set; }
-    public Guid RoundId { get; set; }
-    public Guid VoterPlayerId { get; set; }
-    public Guid VotedPlayerId { get; set; }
+    public string Id { get; set; }
+    public string RoundId { get; set; }
+    public string VoterPlayerId { get; set; }
+    public string VotedPlayerId { get; set; }
     public DateTime CreatedAt { get; set; }
 }
 
 public class MatchResultResponse
 {
-    public Guid Id { get; set; }
-    public Guid RoomId { get; set; }
-    public Guid WinnerPlayerId { get; set; }
+    public string Id { get; set; }
+    public string RoomId { get; set; }
+    public string WinnerPlayerId { get; set; }
     public string WinnerUsername { get; set; } = string.Empty;
     public int TotalRounds { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -99,5 +99,5 @@ public class MatchResultResponse
 
 public class RoundScoresResponse
 {
-    public Dictionary<Guid, int> Scores { get; set; } = new();
+    public Dictionary<string, int> Scores { get; set; } = new();
 }

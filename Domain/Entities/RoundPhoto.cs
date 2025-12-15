@@ -5,9 +5,9 @@ namespace IdeonBack.Domain.Entities;
 /// </summary>
 public class RoundPhoto
 {
-    public Guid Id { get; set; }
-    public Guid RoundId { get; set; }
-    public Guid PlayerId { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string RoundId { get; set; } = string.Empty;
+    public string PlayerId { get; set; } = string.Empty;
     public string PhotoUrl { get; set; } = string.Empty;
     public DateTime UploadedAt { get; set; }
 

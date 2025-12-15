@@ -64,7 +64,7 @@ public class PhotoClashController : ControllerBase
     /// Obtener estado de una sala
     /// </summary>
     [HttpGet("rooms/{roomId}")]
-    public async Task<ActionResult<RoomResponse>> GetRoom(Guid roomId)
+    public async Task<ActionResult<RoomResponse>> GetRoom(string roomId)
     {
         var room = await _photoClashService.GetRoomStateAsync(roomId);
         if (room == null)
@@ -96,7 +96,7 @@ public class PhotoClashController : ControllerBase
     /// Obtener ronda actual
     /// </summary>
     [HttpGet("rooms/{roomId}/current-round")]
-    public async Task<ActionResult<RoundResponse>> GetCurrentRound(Guid roomId)
+    public async Task<ActionResult<RoundResponse>> GetCurrentRound(string roomId)
     {
         var round = await _photoClashService.GetCurrentRoundAsync(roomId);
         if (round == null)
@@ -146,7 +146,7 @@ public class PhotoClashController : ControllerBase
     /// Obtener fotos de una ronda
     /// </summary>
     [HttpGet("rounds/{roundId}/photos")]
-    public async Task<ActionResult<List<RoundPhotoResponse>>> GetRoundPhotos(Guid roundId)
+    public async Task<ActionResult<List<RoundPhotoResponse>>> GetRoundPhotos(string roundId)
     {
         var photos = await _photoClashService.GetRoundPhotosAsync(roundId);
         
@@ -167,7 +167,7 @@ public class PhotoClashController : ControllerBase
     /// Iniciar fase de votación
     /// </summary>
     [HttpPost("rooms/{roomId}/start-voting")]
-    public async Task<ActionResult<RoomResponse>> StartVoting(Guid roomId)
+    public async Task<ActionResult<RoomResponse>> StartVoting(string roomId)
     {
         try
         {
@@ -215,7 +215,7 @@ public class PhotoClashController : ControllerBase
     /// Calcular puntuaciones de una ronda
     /// </summary>
     [HttpPost("rounds/{roundId}/calculate-scores")]
-    public async Task<ActionResult<RoundScoresResponse>> CalculateScores(Guid roundId)
+    public async Task<ActionResult<RoundScoresResponse>> CalculateScores(string roundId)
     {
         var scores = await _photoClashService.CalculateRoundScoresAsync(roundId);
         return Ok(new RoundScoresResponse { Scores = scores });
@@ -225,7 +225,7 @@ public class PhotoClashController : ControllerBase
     /// Finalizar ronda
     /// </summary>
     [HttpPost("rounds/{roundId}/finish")]
-    public async Task<ActionResult<RoundResponse>> FinishRound(Guid roundId)
+    public async Task<ActionResult<RoundResponse>> FinishRound(string roundId)
     {
         try
         {
@@ -251,7 +251,7 @@ public class PhotoClashController : ControllerBase
     /// Iniciar siguiente ronda
     /// </summary>
     [HttpPost("rooms/{roomId}/next-round")]
-    public async Task<ActionResult<RoundResponse>> NextRound(Guid roomId)
+    public async Task<ActionResult<RoundResponse>> NextRound(string roomId)
     {
         try
         {
@@ -279,7 +279,7 @@ public class PhotoClashController : ControllerBase
     /// Finalizar partida
     /// </summary>
     [HttpPost("rooms/{roomId}/finish")]
-    public async Task<ActionResult<MatchResultResponse>> FinishGame(Guid roomId)
+    public async Task<ActionResult<MatchResultResponse>> FinishGame(string roomId)
     {
         try
         {

@@ -4,9 +4,9 @@ namespace IdeonBack.Domain.Interfaces;
 
 public interface IRoundPhotoRepository
 {
-    Task<RoundPhoto?> GetByIdAsync(Guid id);
-    Task<IEnumerable<RoundPhoto>> GetByRoundIdAsync(Guid roundId);
-    Task<RoundPhoto?> GetByRoundAndPlayerAsync(Guid roundId, Guid playerId);
+    Task<RoundPhoto?> GetByIdAsync(string id);
+    Task<IEnumerable<RoundPhoto>> GetByRoundIdAsync(string roundId);
+    Task<RoundPhoto?> GetByRoundAndPlayerAsync(string roundId, string playerId);
     Task<RoundPhoto> CreateAsync(RoundPhoto roundPhoto);
-    Task<int> GetPhotoCountByRoundIdAsync(Guid roundId);
+    Task<int> GetPhotoCountByRoundIdAsync(string roundId);
 }

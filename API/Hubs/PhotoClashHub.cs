@@ -28,7 +28,7 @@ public class PhotoClashHub : Hub
     /// <summary>
     /// Notificar que un jugador se unió
     /// </summary>
-    public async Task NotifyPlayerJoined(string roomCode, string username, Guid userId)
+    public async Task NotifyPlayerJoined(string roomCode, string username, string userId)
     {
         await Clients.Group($"room_{roomCode}").SendAsync("PlayerJoined", new
         {
@@ -83,7 +83,7 @@ public class PhotoClashHub : Hub
     /// <summary>
     /// Notificar que una foto fue subida
     /// </summary>
-    public async Task NotifyPhotoUploaded(string roomCode, Guid playerId, string username)
+    public async Task NotifyPhotoUploaded(string roomCode, string playerId, string username)
     {
         await Clients.Group($"room_{roomCode}").SendAsync("PhotoUploaded", new
         {
@@ -108,7 +108,7 @@ public class PhotoClashHub : Hub
     /// <summary>
     /// Notificar que se registró un voto
     /// </summary>
-    public async Task NotifyVoteRegistered(string roomCode, Guid voterId)
+    public async Task NotifyVoteRegistered(string roomCode, string voterId)
     {
         await Clients.Group($"room_{roomCode}").SendAsync("VoteRegistered", new
         {

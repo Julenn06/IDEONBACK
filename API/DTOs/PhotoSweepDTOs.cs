@@ -4,15 +4,15 @@ namespace IdeonBack.API.DTOs;
 
 public class RegisterPhotoRequest
 {
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
     public string Uri { get; set; } = string.Empty;
     public DateTime? DateTaken { get; set; }
 }
 
 public class PhotoResponse
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public string Id { get; set; }
+    public string UserId { get; set; }
     public string Uri { get; set; } = string.Empty;
     public DateTime? DateTaken { get; set; }
     public bool? KeepStatus { get; set; }

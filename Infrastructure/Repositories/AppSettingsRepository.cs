@@ -14,7 +14,7 @@ public class AppSettingsRepository : IAppSettingsRepository
         _context = context;
     }
 
-    public async Task<AppSettings?> GetByUserIdAsync(Guid userId)
+    public async Task<AppSettings?> GetByUserIdAsync(string userId)
     {
         return await _context.AppSettings
             .FirstOrDefaultAsync(s => s.UserId == userId);
@@ -22,8 +22,8 @@ public class AppSettingsRepository : IAppSettingsRepository
 
     public async Task<AppSettings> CreateAsync(AppSettings settings)
     {
-        if (settings.Id == Guid.Empty)
-            settings.Id = Guid.NewGuid();
+        if (settings.Id == string.Empty)
+            settings.Id = Guid.NewGuid().ToString();
 
         _context.AppSettings.Add(settings);
         await _context.SaveChangesAsync();
