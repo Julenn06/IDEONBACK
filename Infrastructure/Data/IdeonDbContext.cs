@@ -22,16 +22,33 @@ public class IdeonDbContext : DbContext
     public DbSet<MatchResult> MatchResults { get; set; } = null!;
     public DbSet<AppSettings> AppSettings { get; set; } = null!;
 
+    private static Guid ConvertStringToGuid(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return Guid.NewGuid();
+        
+        return Guid.TryParse(value, out var result) ? result : Guid.NewGuid();
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // Habilitar extensión UUID (si no existe)
+        modelBuilder.HasPostgresExtension("pgcrypto");
+
+        // Configurar conversión de string a Guid para todas las columnas UUID
+        var stringToGuidConverter = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<string, Guid>(
+            v => ConvertStringToGuid(v),
+            v => v.ToString()
+        );
 
         // User
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("users");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.Username).HasColumnName("username").IsRequired();
             entity.Property(e => e.AvatarUrl).HasColumnName("avatar_url");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
@@ -43,8 +60,8 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("photos");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
-            entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.UserId).HasColumnName("user_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.Uri).HasColumnName("uri").IsRequired();
             entity.Property(e => e.DateTaken).HasColumnName("date_taken");
             entity.Property(e => e.KeepStatus).HasColumnName("keep_status");
@@ -61,7 +78,7 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("rooms");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.Code).HasColumnName("code").IsRequired();
             entity.Property(e => e.Status).HasColumnName("status")
                 .HasConversion<string>();
@@ -76,9 +93,9 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("room_players");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
-            entity.Property(e => e.RoomId).HasColumnName("room_id").IsRequired();
-            entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.RoomId).HasColumnName("room_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.UserId).HasColumnName("user_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.JoinedAt).HasColumnName("joined_at");
             entity.Property(e => e.Score).HasColumnName("score");
 
@@ -98,8 +115,8 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("rounds");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
-            entity.Property(e => e.RoomId).HasColumnName("room_id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.RoomId).HasColumnName("room_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.RoundNumber).HasColumnName("round_number").IsRequired();
             entity.Property(e => e.PromptPhrase).HasColumnName("prompt_phrase").IsRequired();
             entity.Property(e => e.StartedAt).HasColumnName("started_at");
@@ -116,9 +133,9 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("round_photos");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
-            entity.Property(e => e.RoundId).HasColumnName("round_id").IsRequired();
-            entity.Property(e => e.PlayerId).HasColumnName("player_id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.RoundId).HasColumnName("round_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.PlayerId).HasColumnName("player_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.PhotoUrl).HasColumnName("photo_url").IsRequired();
             entity.Property(e => e.UploadedAt).HasColumnName("uploaded_at");
 
@@ -138,10 +155,10 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("votes");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
-            entity.Property(e => e.RoundId).HasColumnName("round_id").IsRequired();
-            entity.Property(e => e.VoterPlayerId).HasColumnName("voter_player_id").IsRequired();
-            entity.Property(e => e.VotedPlayerId).HasColumnName("voted_player_id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.RoundId).HasColumnName("round_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.VoterPlayerId).HasColumnName("voter_player_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.VotedPlayerId).HasColumnName("voted_player_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 
             entity.HasOne(e => e.Round)
@@ -165,9 +182,9 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("match_results");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
-            entity.Property(e => e.RoomId).HasColumnName("room_id").IsRequired();
-            entity.Property(e => e.WinnerPlayerId).HasColumnName("winner_player_id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.RoomId).HasColumnName("room_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.WinnerPlayerId).HasColumnName("winner_player_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.TotalRounds).HasColumnName("total_rounds");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 
@@ -187,8 +204,8 @@ public class IdeonDbContext : DbContext
         {
             entity.ToTable("app_settings");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
-            entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
+            entity.Property(e => e.Id).HasColumnName("id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
+            entity.Property(e => e.UserId).HasColumnName("user_id").HasColumnType("uuid").HasConversion(stringToGuidConverter).IsRequired();
             entity.Property(e => e.DarkMode).HasColumnName("dark_mode");
             entity.Property(e => e.Notifications).HasColumnName("notifications");
             entity.Property(e => e.Language).HasColumnName("language");

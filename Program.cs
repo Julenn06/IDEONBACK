@@ -1,4 +1,5 @@
 ﻿using IdeonBack.API.Hubs;
+using IdeonBack.API.Middleware;
 using IdeonBack.Application.Services;
 using IdeonBack.Domain.Interfaces;
 using IdeonBack.Infrastructure.Data;
@@ -14,7 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 // CrateDB (compatible con protocolo PostgreSQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<IdeonDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, o => o.EnableRetryOnFailure()));
+
+// Configuración para manejar DateTime como UTC en PostgreSQL
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Repositorios
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -33,9 +37,15 @@ builder.Services.AddScoped<PhotoClashService>();
 builder.Services.AddScoped<PhotoSweepService>();
 builder.Services.AddSingleton<PhraseGeneratorService>();
 builder.Services.AddSingleton<RoomCodeGeneratorService>();
+builder.Services.AddSingleton<TimerService>();
 
 // Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 
 // SignalR
 builder.Services.AddSignalR();
@@ -80,6 +90,9 @@ var app = builder.Build();
 // ============================================================
 // CONFIGURACIÓN DEL PIPELINE
 // ============================================================
+
+// Middleware de manejo de errores
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // Swagger en desarrollo
 if (app.Environment.IsDevelopment())

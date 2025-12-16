@@ -66,6 +66,9 @@ public class PhotoClashController : ControllerBase
     [HttpGet("rooms/{roomId}")]
     public async Task<ActionResult<RoomResponse>> GetRoom(string roomId)
     {
+        if (!Guid.TryParse(roomId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var room = await _photoClashService.GetRoomStateAsync(roomId);
         if (room == null)
             return NotFound(new { error = "Sala no encontrada" });
@@ -98,6 +101,9 @@ public class PhotoClashController : ControllerBase
     [HttpGet("rooms/{roomId}/current-round")]
     public async Task<ActionResult<RoundResponse>> GetCurrentRound(string roomId)
     {
+        if (!Guid.TryParse(roomId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var round = await _photoClashService.GetCurrentRoundAsync(roomId);
         if (round == null)
             return NotFound(new { error = "No hay ronda activa" });
@@ -148,6 +154,9 @@ public class PhotoClashController : ControllerBase
     [HttpGet("rounds/{roundId}/photos")]
     public async Task<ActionResult<List<RoundPhotoResponse>>> GetRoundPhotos(string roundId)
     {
+        if (!Guid.TryParse(roundId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var photos = await _photoClashService.GetRoundPhotosAsync(roundId);
         
         var response = photos.Select(p => new RoundPhotoResponse

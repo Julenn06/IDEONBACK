@@ -7,22 +7,64 @@ namespace IdeonBack.API.Hubs;
 /// </summary>
 public class PhotoClashHub : Hub
 {
+    private readonly ILogger<PhotoClashHub> _logger;
+
+    public PhotoClashHub(ILogger<PhotoClashHub> logger)
+    {
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Evento cuando un cliente se conecta
+    /// </summary>
+    public override async Task OnConnectedAsync()
+    {
+        _logger.LogInformation($"Cliente conectado: {Context.ConnectionId}");
+        await base.OnConnectedAsync();
+    }
+
+    /// <summary>
+    /// Evento cuando un cliente se desconecta
+    /// </summary>
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        _logger.LogInformation($"Cliente desconectado: {Context.ConnectionId}");
+        await base.OnDisconnectedAsync(exception);
+    }
+
     /// <summary>
     /// Unirse a un grupo de sala específico
     /// </summary>
-    public async Task JoinRoom(string roomCode)
+    public async Task JoinRoom(string roomCode, string username, string userId)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, $"room_{roomCode}");
-        await Clients.Group($"room_{roomCode}").SendAsync("PlayerJoined", Context.ConnectionId);
+        
+        await Clients.Group($"room_{roomCode}").SendAsync("PlayerJoined", new
+        {
+            connectionId = Context.ConnectionId,
+            username,
+            userId,
+            timestamp = DateTime.UtcNow
+        });
+
+        _logger.LogInformation($"Usuario {username} se unió a la sala {roomCode}");
     }
 
     /// <summary>
     /// Salir de un grupo de sala
     /// </summary>
-    public async Task LeaveRoom(string roomCode)
+    public async Task LeaveRoom(string roomCode, string username)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"room_{roomCode}");
-        await Clients.Group($"room_{roomCode}").SendAsync("PlayerLeft", Context.ConnectionId);
+        
+        await Clients.Group($"room_{roomCode}").SendAsync("PlayerLeft", new
+        {
+            connectionId = Context.ConnectionId,
+            username,
+            timestamp = DateTime.UtcNow
+        });
+
+        _logger.LogInformation($"Usuario {username} salió de la sala {roomCode}");
     }
 
     /// <summary>
@@ -152,17 +194,5 @@ public class PhotoClashHub : Hub
             error = errorMessage,
             timestamp = DateTime.UtcNow
         });
-    }
-
-    public override async Task OnConnectedAsync()
-    {
-        await base.OnConnectedAsync();
-        Console.WriteLine($"Cliente conectado: {Context.ConnectionId}");
-    }
-
-    public override async Task OnDisconnectedAsync(Exception? exception)
-    {
-        await base.OnDisconnectedAsync(exception);
-        Console.WriteLine($"Cliente desconectado: {Context.ConnectionId}");
     }
 }

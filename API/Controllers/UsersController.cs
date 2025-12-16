@@ -46,6 +46,10 @@ public class UsersController : ControllerBase
     [HttpGet("{userId}")]
     public async Task<ActionResult<UserResponse>> GetUser(string userId)
     {
+        // Validar formato UUID
+        if (!Guid.TryParse(userId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var user = await _userService.GetUserAsync(userId);
         if (user == null)
             return NotFound(new { error = "Usuario no encontrado" });
@@ -109,6 +113,9 @@ public class UsersController : ControllerBase
     [HttpGet("{userId}/settings")]
     public async Task<ActionResult<SettingsResponse>> GetSettings(string userId)
     {
+        if (!Guid.TryParse(userId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var settings = await _userService.GetSettingsAsync(userId);
         if (settings == null)
             return NotFound(new { error = "Configuración no encontrada" });
@@ -129,6 +136,9 @@ public class UsersController : ControllerBase
     [HttpPost("{userId}/login")]
     public async Task<IActionResult> UpdateLastLogin(string userId)
     {
+        if (!Guid.TryParse(userId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         await _userService.UpdateLastLoginAsync(userId);
         return Ok(new { message = "Login actualizado" });
     }

@@ -36,6 +36,9 @@ public class PhotoSweepController : ControllerBase
     [HttpGet("users/{userId}/unreviewed")]
     public async Task<ActionResult<List<PhotoResponse>>> GetUnreviewedPhotos(string userId)
     {
+        if (!Guid.TryParse(userId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var photos = await _photoSweepService.GetUnreviewedPhotosAsync(userId);
         var response = photos.Select(MapPhotoToResponse).ToList();
         
@@ -48,6 +51,9 @@ public class PhotoSweepController : ControllerBase
     [HttpPost("photos/{photoId}/keep")]
     public async Task<ActionResult<PhotoResponse>> KeepPhoto(string photoId)
     {
+        if (!Guid.TryParse(photoId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         try
         {
             var photo = await _photoSweepService.KeepPhotoAsync(photoId);
@@ -65,6 +71,9 @@ public class PhotoSweepController : ControllerBase
     [HttpPost("photos/{photoId}/delete")]
     public async Task<ActionResult<PhotoResponse>> DeletePhoto(string photoId)
     {
+        if (!Guid.TryParse(photoId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         try
         {
             var photo = await _photoSweepService.DeletePhotoAsync(photoId);
@@ -82,6 +91,9 @@ public class PhotoSweepController : ControllerBase
     [HttpPost("photos/{photoId}/recover")]
     public async Task<ActionResult<PhotoResponse>> RecoverPhoto(string photoId)
     {
+        if (!Guid.TryParse(photoId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         try
         {
             var photo = await _photoSweepService.RecoverPhotoAsync(photoId);
@@ -99,6 +111,9 @@ public class PhotoSweepController : ControllerBase
     [HttpGet("users/{userId}/deleted")]
     public async Task<ActionResult<List<PhotoResponse>>> GetDeletedPhotos(string userId, [FromQuery] int limit = 5)
     {
+        if (!Guid.TryParse(userId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var photos = await _photoSweepService.GetDeletedPhotosAsync(userId, limit);
         var response = photos.Select(MapPhotoToResponse).ToList();
         
@@ -111,6 +126,9 @@ public class PhotoSweepController : ControllerBase
     [HttpGet("users/{userId}/stats")]
     public async Task<ActionResult<PhotoStatsResponse>> GetStats(string userId)
     {
+        if (!Guid.TryParse(userId, out _))
+            return BadRequest(new { error = "El ID debe ser un UUID válido" });
+
         var stats = await _photoSweepService.GetStatsAsync(userId);
         
         return Ok(new PhotoStatsResponse

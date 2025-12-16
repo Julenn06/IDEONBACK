@@ -1,18 +1,23 @@
+using System.Text.Json.Serialization;
+using IdeonBack.API.Infrastructure;
+
 namespace IdeonBack.API.DTOs;
 
 // ============ PHOTOSWEEP DTOs ============
 
 public class RegisterPhotoRequest
 {
-    public string UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public string Uri { get; set; } = string.Empty;
+    
+    [JsonConverter(typeof(FlexibleDateTimeConverter))]
     public DateTime? DateTaken { get; set; }
 }
 
 public class PhotoResponse
 {
-    public string Id { get; set; }
-    public string UserId { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string UserId { get; set; } = string.Empty;
     public string Uri { get; set; } = string.Empty;
     public DateTime? DateTaken { get; set; }
     public bool? KeepStatus { get; set; }
